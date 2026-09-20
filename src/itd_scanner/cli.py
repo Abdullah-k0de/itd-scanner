@@ -5,7 +5,14 @@ Command-line interface for itd-scanner.
 import argparse
 import sys
 import json
-from itd_scanner import scan_code
+from itd_scanner import scan_file
+
+# Ensure UTF-8 output on Windows consoles
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 def main():
     parser = argparse.ArgumentParser(
@@ -17,21 +24,36 @@ def main():
     args = parser.parse_args()
 
     try:
-        with open(args.file, "r", encoding="utf-8") as f:
-            code = f.read()
+        report = scan_file(args.file, return_details=True)
+    except FileNotFoundError:
+        print(f"Error: File '{args.file}' not found.", file=sys.stderr)
+        sys.exit(1)
     except Exception as e:
         print(f"Error reading file: {e}", file=sys.stderr)
         sys.exit(1)
 
-    results = scan_code(code)
-
     if args.json:
-        print(json.dumps(results, indent=2))
+        print(json.dumps(report, indent=2))
     else:
-        print(f"\n--- itd-scanner Results for: {args.file} ---")
-        for smell, detected in results.items():
-            status = "🚨 DETECTED" if detected else "✅ Clean"
+        print(f"\n{'='*60}")
+        print(f" ITD-Scanner Report: {args.file}")
+        print(f"{'='*60}")
+
+        if report.get("syntax_error"):
+            print("[!] Warning: File contains SyntaxErrors; static parse was incomplete.\n")
+
+        print("Summary of Anti-Patterns:")
+        for smell, detected in report["flags"].items():
+            status = "[DETECTED]" if detected else "[CLEAN]"
             print(f"  {smell:<20}: {status}")
+
+        if report["findings"]:
+            print(f"\nDetailed Findings ({len(report['findings'])}):")
+            for f in report["findings"]:
+                print(f"  - Line {f['line']:<3} [{f['smell']}]: {f['message']}")
+        else:
+            print("\nNo idiomatic technical debt detected.")
+        print(f"{'='*60}\n")
 
 if __name__ == "__main__":
     main()
