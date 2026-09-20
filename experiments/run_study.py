@@ -17,12 +17,16 @@ import json
 import pandas as pd
 from typing import Dict, Any, Tuple
 
+import warnings
+warnings.filterwarnings("ignore", category=SyntaxWarning)
+
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
 
 from itd_scanner import scan_code, compute_code_metrics
 from itd_scanner.baselines import run_all_baselines
