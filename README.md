@@ -1,11 +1,14 @@
 # itd-scanner
 
-[![PyPI version](https://img.shields.io/pypi/v/itd-scanner.svg)](https://pypi.org/project/itd-scanner/)
-[![Python Version](https://img.shields.io/pypi/pyversions/itd-scanner.svg)](https://pypi.org/project/itd-scanner/)
+[![PyPI version](https://img.shields.io/pypi/v/itd-scanner.svg)](https://pypi.org/project/itd-scanner/0.1.0/)
+[![Python Version](https://img.shields.io/pypi/pyversions/itd-scanner.svg)](https://pypi.org/project/itd-scanner/0.1.0/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Code Style](https://img.shields.io/badge/code%20style-PEP%208-green.svg)](https://peps.python.org/pep-0008/)
 
+> 🚀 **Official PyPI Release:** [https://pypi.org/project/itd-scanner/0.1.0/](https://pypi.org/project/itd-scanner/0.1.0/)
+
 A production-ready static analysis engine for detecting **Idiomatic Technical Debt (ITD)**, vectorization bypass, and performance antipatterns in Data Science Python (**Pandas, NumPy, SciPy, and PyTorch**).
+
 
 ---
 
@@ -19,13 +22,13 @@ Traditional linters (`pylint`, `flake8`, `perflint`) focus on PEP 8 style or gen
 
 ## The 5 Core ITD Antipatterns
 
-| Smell | Antipattern (What It Detects) | Idiomatic Alternative |
-| :--- | :--- | :--- |
-| **Collection Choker** | Row-by-row iteration over DataFrames/Arrays (`.iterrows()`, `.itertuples()`, `for i in range(len(arr)): arr[i]`) | Vectorized operations, `.apply()`, or array indexing |
-| **Math Looper** | Scalar accumulator math (`total += arr[i]` or `total += x * y`) inside loops | `np.sum()`, `df['col'].sum()`, or vectorized ufuncs |
-| **String Masher** | Quadratic string concatenation (`s += ...`) inside iterative loops | `str.join()`, `f-strings`, or `pd.Series.str` |
-| **RAM Hog** | Wasteful list comprehensions materialized inside reductions (`sum([...])`, `set([...])`) | Generator expressions `sum(...)` or set comprehensions `{...}` |
-| **DIY Wheel** | Reinventing built-ins (`d[k] = d.get(k, 0) + 1`, linear search loops, manual `min`/`max`/`unique`) | `collections.Counter()`, `pd.value_counts()`, `in`, `set()` |
+| Smell                       | Antipattern (What It Detects)                                                                                          | Idiomatic Alternative                                               |
+| :-------------------------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
+| **Collection Choker** | Row-by-row iteration over DataFrames/Arrays (`.iterrows()`, `.itertuples()`, `for i in range(len(arr)): arr[i]`) | Vectorized operations,`.apply()`, or array indexing               |
+| **Math Looper**       | Scalar accumulator math (`total += arr[i]` or `total += x * y`) inside loops                                       | `np.sum()`, `df['col'].sum()`, or vectorized ufuncs             |
+| **String Masher**     | Quadratic string concatenation (`s += ...`) inside iterative loops                                                   | `str.join()`, `f-strings`, or `pd.Series.str`                 |
+| **RAM Hog**           | Wasteful list comprehensions materialized inside reductions (`sum([...])`, `set([...])`)                           | Generator expressions`sum(...)` or set comprehensions `{...}`   |
+| **DIY Wheel**         | Reinventing built-ins (`d[k] = d.get(k, 0) + 1`, linear search loops, manual `min`/`max`/`unique`)             | `collections.Counter()`, `pd.value_counts()`, `in`, `set()` |
 
 ---
 
@@ -131,6 +134,7 @@ print(report["metrics"]["cyclomatic_complexity"])  # CC
 ## Antipattern Examples & Fixes
 
 ### 1. Collection Choker
+
 ```python
 # ❌ Antipattern (Iterating row-by-row)
 for idx, row in df.iterrows():
@@ -141,6 +145,7 @@ df['total'] = df['a'] + df['b']
 ```
 
 ### 2. Math Looper
+
 ```python
 # ❌ Antipattern (Pure Python loop math)
 total = 0
@@ -152,6 +157,7 @@ total = np.sum(arr * 2)
 ```
 
 ### 3. DIY Wheel (Frequency Counting)
+
 ```python
 # ❌ Antipattern (Manual dict accumulation)
 counts = {}
