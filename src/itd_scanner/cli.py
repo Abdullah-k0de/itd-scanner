@@ -6,8 +6,13 @@ and software complexity metrics in Data Science Python code.
 
 import argparse
 import sys
+import os
 import json
 from itd_scanner import scan_file
+
+# Initialize VT100 terminal mode on Windows consoles for ANSI colors
+if sys.platform == "win32":
+    os.system("")
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
@@ -15,6 +20,7 @@ if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
 
 # ANSI Color Codes
 RESET = "\033[0m"

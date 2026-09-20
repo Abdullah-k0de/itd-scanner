@@ -8,15 +8,16 @@ version = "0.1.0"
 description = "A static analysis engine for detecting Idiomatic Technical Debt and vectorized library bypass in Data Science Python"
 readme = "README.md"
 requires-python = ">=3.9"
+license = "MIT"
 authors = [
-    { name = "Thesis Author", email = "author@kfupm.edu.sa" }
+    { name = "Abdullah Khalid" }
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Topic :: Software Development :: Quality Assurance",
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
+
 
 dependencies = [
     "pandas>=2.0.0",
