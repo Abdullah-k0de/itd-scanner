@@ -9,6 +9,8 @@ OUTPUT_PATH = os.path.join(BASE_DIR, "datasets", "phase2_score_4_plus.csv")
 
 def clean_code(raw_code: str) -> str:
     """Strips markdown code fences and leading/trailing whitespace."""
+    if not isinstance(raw_code, str):
+        return ""
     code = raw_code.strip()
     match = re.search(r"```(?:python)?\s*(.*?)\s*```", code, re.DOTALL)
     if match:
@@ -19,6 +21,7 @@ print(f"Loading dataset from: {INPUT_PATH}")
 df = pd.read_csv(INPUT_PATH)
 valid_solutions = []
 
+# Map the four model configurations
 model_configs = [
     ("27B_Control", "generated_code_27b", "generated_code_27b_score"),
     ("27B_Negative", "generated_code_27b_negative", "generated_code_27b_negative_score"),
@@ -40,7 +43,9 @@ for config_name, code_col, score_col in model_configs:
         if not raw_code_str or raw_code_str.startswith("ERROR:"):
             continue
 
-        source_code = clean_code(raw_code_str)
+        generated_code = clean_code(raw_code_str)
+        complete_ref = clean_code(str(row.get("complete_reference_solution", "")))
+        ref_snippet = clean_code(str(row.get("reference_code", "")))
 
         valid_solutions.append({
             "problem_id": row["problem_id"],
@@ -48,9 +53,17 @@ for config_name, code_col, score_col in model_configs:
             "perturbation_type": row.get("perturbation_type", "Origin"),
             "model_config": config_name,
             "functional_score": row[score_col],
-            "source_code": source_code,
+            "generated_code": generated_code,
+            "complete_reference_solution": complete_ref,
+            "reference_code": ref_snippet,
         })
 
 clean_df = pd.DataFrame(valid_solutions)
 clean_df.to_csv(OUTPUT_PATH, index=False)
-print(f"Extraction complete: {len(clean_df)} valid solutions extracted and saved to '{OUTPUT_PATH}'.")
+print(f"Extraction complete: {len(clean_df)} paired solutions saved to '{OUTPUT_PATH}'.")
+
+# Summary breakdown
+print("\nBreakdown by Model Configuration (Score >= 4):")
+print(clean_df["model_config"].value_counts())
+print("\nDataset Schema:")
+print(list(clean_df.columns))

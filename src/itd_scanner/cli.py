@@ -20,11 +20,12 @@ def main():
     )
     parser.add_argument("file", help="Python source file to analyze")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
+    parser.add_argument("--metrics", action="store_true", help="Include Radon software metrics (CC, LOC, MI)")
 
     args = parser.parse_args()
 
     try:
-        report = scan_file(args.file, return_details=True)
+        report = scan_file(args.file, return_details=True, include_metrics=args.metrics)
     except FileNotFoundError:
         print(f"Error: File '{args.file}' not found.", file=sys.stderr)
         sys.exit(1)
@@ -53,6 +54,15 @@ def main():
                 print(f"  - Line {f['line']:<3} [{f['smell']}]: {f['message']}")
         else:
             print("\nNo idiomatic technical debt detected.")
+
+        if args.metrics and "metrics" in report:
+            m = report["metrics"]
+            print(f"\nCode Metrics (Radon):")
+            print(f"  - LOC (Lines of Code)      : {m.get('loc')}")
+            print(f"  - SLOC (Source Lines)      : {m.get('sloc')}")
+            print(f"  - Cyclomatic Complexity    : {m.get('cyclomatic_complexity')}")
+            print(f"  - Maintainability Index    : {m.get('maintainability_index')}")
+
         print(f"{'='*60}\n")
 
 if __name__ == "__main__":
