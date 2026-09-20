@@ -7,6 +7,7 @@ Baseline linter wrappers for comparative evaluation:
 
 import os
 import sys
+import re
 import tempfile
 import subprocess
 from typing import Dict, List, Any
@@ -94,6 +95,7 @@ def run_dslinter(code: str, inject_header: bool = True, timeout_sec: int = 15) -
         return {
             "available": False,
             "flagged": False,
+            "codes": "",
             "warnings": [],
             "error": exec_res["error"],
         }
@@ -104,14 +106,16 @@ def run_dslinter(code: str, inject_header: bool = True, timeout_sec: int = 15) -
         if any(smell in line for smell in ["W5501", "W5502", "W5503", "dataframe-iteration", "unassigned-dataframe"]):
             warnings.append(line.strip())
 
+    detected_codes = sorted(list(set(re.findall(r"W550\d|R550\d", raw))))
+
     return {
         "available": True,
         "flagged": len(warnings) > 0,
+        "codes": ",".join(detected_codes),
         "warnings": warnings,
         "warning_count": len(warnings),
         "raw_output": raw,
     }
-
 
 def run_perflint(code: str, inject_header: bool = True, timeout_sec: int = 15) -> Dict[str, Any]:
     """
@@ -137,6 +141,7 @@ def run_perflint(code: str, inject_header: bool = True, timeout_sec: int = 15) -
         return {
             "available": False,
             "flagged": False,
+            "codes": "",
             "warnings": [],
             "error": exec_res["error"],
         }
@@ -144,12 +149,15 @@ def run_perflint(code: str, inject_header: bool = True, timeout_sec: int = 15) -
     raw = exec_res["raw_output"]
     warnings = []
     for line in raw.splitlines():
-        if any(code in line for code in ["W8201", "W8202", "W8203", "W8204", "W8205", "loop-invariant", "wasteful-comprehension"]):
+        if any(code_id in line for code_id in ["W8201", "W8202", "W8203", "W8204", "W8205", "loop-invariant", "wasteful-comprehension"]):
             warnings.append(line.strip())
+
+    detected_codes = sorted(list(set(re.findall(r"W820\d", raw))))
 
     return {
         "available": True,
         "flagged": len(warnings) > 0,
+        "codes": ",".join(detected_codes),
         "warnings": warnings,
         "warning_count": len(warnings),
         "raw_output": raw,
@@ -171,16 +179,19 @@ def run_pandas_vet(code: str, inject_header: bool = True, timeout_sec: int = 15)
         return {
             "available": False,
             "flagged": False,
+            "codes": "",
             "warnings": [],
             "error": exec_res["error"],
         }
 
     raw = exec_res["raw_output"]
     warnings = [line.strip() for line in raw.splitlines() if ": PD" in line]
+    detected_codes = sorted(list(set(re.findall(r"PD\d{3}", raw))))
 
     return {
         "available": True,
         "flagged": len(warnings) > 0,
+        "codes": ",".join(detected_codes),
         "warnings": warnings,
         "warning_count": len(warnings),
         "raw_output": raw,
