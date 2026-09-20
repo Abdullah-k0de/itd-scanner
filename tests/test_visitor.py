@@ -83,6 +83,87 @@ seen = list(set(dataset))
     result_good = scan_code(code_good)
     assert result_good["DIY Wheel"] is False
 
+def test_collection_choker_array_index():
+    code = """
+import numpy as np
+res = []
+for i in range(len(arr)):
+    res.append(arr[i])
+"""
+    result = scan_code(code)
+    assert result["Collection Choker"] is True
+
+def test_collection_choker_2d_matrix():
+    code = """
+res = []
+for i in range(n):
+    res.append(matrix[i, 0])
+"""
+    result = scan_code(code)
+    assert result["Collection Choker"] is True
+
+def test_collection_choker_to_dict_records():
+    code = """
+for row in df.to_dict('records'):
+    process(row)
+"""
+    result = scan_code(code)
+    assert result["Collection Choker"] is True
+
+def test_math_looper_assign_product():
+    code = """
+prod = 1
+for x in factors:
+    prod = prod * x
+"""
+    result = scan_code(code)
+    assert result["Math Looper"] is True
+
+def test_math_looper_commutative():
+    code = """
+total = 0
+for x in numbers:
+    total = x + total
+"""
+    result = scan_code(code)
+    assert result["Math Looper"] is True
+
+def test_string_masher_tracked_var():
+    code = """
+res = ""
+for word in words:
+    res += word
+"""
+    result = scan_code(code)
+    assert result["String Masher"] is True
+
+def test_ram_hog_set():
+    code = """
+unique_items = set([x.strip() for x in raw_strings])
+"""
+    result = scan_code(code)
+    assert result["RAM Hog"] is True
+
+def test_diy_wheel_dict_get():
+    code = """
+counts = {}
+for item in items:
+    counts[item] = counts.get(item, 0) + 1
+"""
+    result = scan_code(code)
+    assert result["DIY Wheel"] is True
+
+def test_diy_wheel_linear_search():
+    code = """
+found = False
+for item in dataset:
+    if item == target:
+        found = True
+        break
+"""
+    result = scan_code(code)
+    assert result["DIY Wheel"] is True
+
 def test_syntax_error_safety():
     code_invalid = "def broken_python_syntax( :"
     # Must not crash, should return all False flags
@@ -91,9 +172,19 @@ def test_syntax_error_safety():
 
 if __name__ == "__main__":
     test_collection_choker()
+    test_collection_choker_array_index()
+    test_collection_choker_2d_matrix()
+    test_collection_choker_to_dict_records()
     test_math_looper()
+    test_math_looper_assign_product()
+    test_math_looper_commutative()
     test_string_masher()
+    test_string_masher_tracked_var()
     test_ram_hog()
+    test_ram_hog_set()
     test_diy_wheel()
+    test_diy_wheel_dict_get()
+    test_diy_wheel_linear_search()
     test_syntax_error_safety()
     print("All tests passed successfully!")
+
