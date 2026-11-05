@@ -1,0 +1,6 @@
+Configuration,Total Solutions,ITD Detected Count,ITD Prevalence (%),Total Smells Found,Mean Smells / Solution,ITD Introduced vs Ref (%)
+27B_Control,869,47,5.4,54,0.06,4.0
+9B_Control,721,57,7.9,74,0.1,6.7
+27B_Negative,667,412,61.8,793,1.19,55.5
+9B_Negative,287,215,74.9,376,1.31,69.0
+Human Reference (All),2544,163,6.4,214,0.08,0.0

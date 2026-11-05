@@ -205,6 +205,7 @@ def main():
     parser.add_argument("--input", default=DEFAULT_INPUT, help="Path to input paired dataset CSV")
     parser.add_argument("--output", default=DEFAULT_OUTPUT, help="Path to output master metrics CSV")
     parser.add_argument("--limit", type=int, default=None, help="Process only the first N rows")
+    parser.add_argument("--problem-id", type=str, default=None, help="Filter and run only on a specific problem ID (e.g. '1.0' or '1')")
     parser.add_argument("--no-baselines", action="store_true", help="Skip external baseline linters to run faster")
     parser.add_argument("--preview", action="store_true", help="Print detailed preview to console without saving")
 
@@ -218,6 +219,16 @@ def main():
     df = pd.read_csv(args.input)
     total_input_rows = len(df)
     print(f"Total paired rows in input: {total_input_rows}")
+
+    if args.problem_id is not None:
+        target_str = str(args.problem_id).strip()
+        try:
+            target_float = float(target_str)
+            df = df[df["problem_id"].astype(float) == target_float].copy()
+        except ValueError:
+            df = df[df["problem_id"].astype(str) == target_str].copy()
+        print(f"Filtered for Problem ID '{args.problem_id}': Found {len(df)} matching rows.")
+
 
     processed_keys = set()
     output_exists = os.path.exists(args.output) and os.path.getsize(args.output) > 0

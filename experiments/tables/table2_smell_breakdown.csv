@@ -1,0 +1,6 @@
+ITD Anti-Pattern,Overall Count,Overall (%),27B_Control (%),9B_Control (%),27B_Negative (%),9B_Negative (%)
+Collection Choker,565,22.2,4.5,7.4,43.8,63.1
+Math Looper,253,9.9,0.3,0.7,26.4,24.0
+String Masher,110,4.3,0.0,0.1,13.8,5.9
+RAM Hog,3,0.1,0.0,0.1,0.3,0.0
+DIY Wheel,366,14.4,1.4,1.9,34.6,38.0

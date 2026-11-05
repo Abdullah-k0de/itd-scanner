@@ -1,0 +1,5 @@
+Metric,LLM Mean,Human Ref Mean,Delta Mean (AI - Ref),Delta Median,Max Delta
+Cyclomatic Complexity (CC),5.83,1.35,4.47,1.0,108.0
+Source Lines of Code (SLOC),28.75,8.25,20.5,11.0,327.0
+Halstead Volume (bits),110.28,13.15,97.12,11.61,3447.55
+Maintainability Index (MI),85.53,87.26,-1.73,0.0,46.68

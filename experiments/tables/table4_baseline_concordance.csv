@@ -1,0 +1,5 @@
+Linter Tool,Paradigm,Target Focus,Flagged Count,Flagged (%),Overlap with ITD (%)
+itd-scanner (Proposed),Semantic AST Pattern Visitor,"Vectorization bypass, math loops, reinvention",731,28.7,100.0%
+pandas-vet,Flake8 Style Plugin,"Variable naming (e.g. PD901), API conventions",556,21.9,9.4%
+perflint,Pylint Performance Plugin,"Global variables in loops (W8202), loop invariants",1012,39.8,84.1%
+dslinter (TU Delft),Pylint Machine Learning Plugin,Type-inference ML smells (W5501-W5508),0,0.0,0.0%
