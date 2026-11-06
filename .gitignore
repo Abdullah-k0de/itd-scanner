@@ -39,3 +39,5 @@ htmlcov/
 # Local data backups / large scratch files
 *.csv_backup
 *_backup.csv
+
+experiments/PHASE2_RESULTS_EXPLANATION.md
